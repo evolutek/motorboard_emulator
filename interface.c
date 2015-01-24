@@ -1,27 +1,22 @@
 #include "interface.h"
 
-
-int connect_pty(){
-  // ask pty
-  int pt = posix_openpt(O_RDWR);
-
-  if (pt < 0){
-    printf("connection failed...");
-    return 1;
+int connect_pty(int *fd){
+  int fd_m, fd_s;
+  if(openpty(&fd_m, &fd_s,NULL,NULL,NULL)){
+    printf("openpty error...");
+    return -1;
   }
+  printf("device: %s\n",ptsname(fd_m));
+  login_tty(fd_m);
 
-  int rc = grantpt(pt);
+  *fd = fd_m;
 
-  if (rc != 0){
-    printf("error on grantpt...");
-    return 1;
-  }
+  return 0;
+}
 
-  rc = unlockpt(pt);
-
-  if (rc != 0){
-    printf("error on unlockpt...");
-    return 1;
-  }
-
+int read_pty(int* fd){
+  char buf = ' ';
+  int a = read(*fd, &buf,1);
+  printf("> %x\n", buf);
+  return 0;
 }
