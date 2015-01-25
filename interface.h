@@ -9,9 +9,10 @@
 #include <pty.h>
 #include <unistd.h>
 #include <utmp.h>
+#include <stdint.h>
 
 int connect_pty(int *fd);
-int read_pty(int* fd);
+uint8_t read_pty(int* fd);
 
 
 #endif

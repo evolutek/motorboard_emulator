@@ -7,16 +7,15 @@ int connect_pty(int *fd){
     return -1;
   }
   printf("device: %s\n",ptsname(fd_m));
-  login_tty(fd_m);
 
+  login_tty(fd_m);
   *fd = fd_m;
 
   return 0;
 }
 
-int read_pty(int* fd){
-  char buf = ' ';
+uint8_t read_pty(int* fd){
+  uint8_t buf = 0;
   int a = read(*fd, &buf,1);
-  printf("> %x\n", buf);
-  return 0;
+  return buf;
 }

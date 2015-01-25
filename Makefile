@@ -2,7 +2,7 @@
 all: build clean
 
 build:
-	gcc -lutil -o mb_emulator main.c interface.c
+	gcc -lutil -lpthread -o mb_emulator main.c  command.c queue.c interface.c
 
 clean:
 	rm -rf *.o
