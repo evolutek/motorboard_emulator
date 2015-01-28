@@ -62,3 +62,7 @@ void print_queue(Queue* q){
   }
   printf("\n");
 }
+
+uint8_t queue_head(Queue * q){
+  return q->head->elt;
+}

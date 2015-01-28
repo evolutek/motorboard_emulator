@@ -10,9 +10,12 @@
 #include <unistd.h>
 #include <utmp.h>
 #include <stdint.h>
+#include "queue.h"
 
 int connect_pty(int *fd);
 uint8_t read_pty(int* fd);
+int write_pty(int* fd, uint8_t byte);
+int send_to_trajman(int* fd, Queue* out);
 
 
 #endif

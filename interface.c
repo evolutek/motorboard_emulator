@@ -19,3 +19,15 @@ uint8_t read_pty(int* fd){
   int a = read(*fd, &buf,1);
   return buf;
 }
+
+int write_pty(int* fd, uint8_t byte){
+  int a = write(*fd, &byte, 1);
+  return a;
+}
+
+int send_to_trajman(int* fd, Queue* out){
+  while (!is_empty(out)){
+    uint8_t byte_to_send = dequeue(out);
+    write_pty(fd, byte_to_send);
+  }
+}

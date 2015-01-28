@@ -11,7 +11,7 @@
 typedef struct{
   Queue input;
   Queue output;
-  pthread_mutex_t mutex_queue;
+  pthread_mutex_t mutex;
 } data_t;
 
 
@@ -21,17 +21,21 @@ static void* serial_simulation(void * p_data){
   connect_pty(&fd);
   while (1){
    int8_t elt = read_pty(&fd);
+   pthread_mutex_lock(&data->mutex);
    enqueue(&data->input, elt);
-   print_queue(&data->input);
+   send_to_trajman(&fd, &data->output);
+   //print_queue(&data->input);
+   pthread_mutex_unlock(&data->mutex);
   }
   return NULL;
 }
 
 static void* manage_commands(void * p_data){
   data_t* data = (data_t*)p_data;
-  while(1)
-    dispatcher(&data->input);
-
+  while(1){
+    dispatcher(&data->input, &data->output, &data->mutex);
+    //print_queue(&data->input);
+  }
   return NULL;
 }
 
@@ -40,16 +44,24 @@ int main(){
   static pthread_t thread_serial_id;
   static pthread_t thread_commands;
 
-  data_t data;
-//  data.mutex_queue = PTHREAD_MUTEX_INITIALIZER;
-  create_queue(&data.input);
-  create_queue(&data.output);
+  Queue queue_input;
+  Queue queue_output;
+
+  create_queue(&queue_input);
+  create_queue(&queue_output);
+
+  data_t data = {
+    .input = queue_input,
+    .output = queue_output,
+    .mutex = PTHREAD_MUTEX_INITIALIZER,
+  };
 
   int ret = pthread_create(&thread_serial_id, NULL, serial_simulation,
       &data);
   int ret2 = pthread_create(&thread_commands, NULL, manage_commands,
       &data);
 
+  pthread_join(thread_commands, NULL);
   pthread_join(thread_serial_id, NULL);
 
   return 0;

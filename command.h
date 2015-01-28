@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <pthread.h>
 #include "queue.h"
 
 typedef enum{
@@ -49,13 +50,43 @@ typedef enum{
   ERROR              = 255
 } t_command;
 
+
 typedef struct{
-  int x;
-  int y;
-  int theta;
+  float xpos;
+  float ypos;
+  float theta;
+  float vdep;
+  float omega;
+  float vG, vD;
+  float diamrG,diamrD;
+  float distroues;
+  float olddist;
+  float oldth;
+  float indexG;
+  float indexD;
+  float wpX;
+  float wpY;
+  float wpTheta;
+  float futur_x;
+  float futur_y;
+  float trp, tri, trd;
+  float rtp, rti, rtd;
+  int moving;
+  int recalage;
+
 } t_robot;
 
-void dispatcher(Queue* q);
+
+void set_diam_wheels(Queue *q);
+void set_wheels_spacing(Queue *q);
+void init(Queue* q);
+void acknowledge(Queue * out);
+void dispatcher(Queue* in, Queue* out, pthread_mutex_t *mutex);
+
+typedef union{
+  float f;
+  uint8_t b[4];
+} f_conv;
 
 #endif
 
