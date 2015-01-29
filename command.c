@@ -33,6 +33,76 @@ void set_wheels_spacing(Queue* in){
   printf("spacing: %f\n", spac);
 }
 
+void set_pid_trsl(Queue* in){
+  printf("pid translation okay\n");
+  float p = unpackfloat(in);
+  float i = unpackfloat(in);
+  float d = unpackfloat(in);
+  printf("p: %f; i: %f; d: %f\n", p,i,d);
+}
+
+void set_pid_rot(Queue* in){
+  printf("pid rotation okay\n");
+  float p = unpackfloat(in);
+  float i = unpackfloat(in);
+  float d = unpackfloat(in);
+  printf("p: %f; i: %f; d: %f\n", p,i,d);
+}
+
+void set_trsl_acc(Queue* in){
+  printf("translation acceleration okay\n");
+  float acc = unpackfloat(in);
+  printf("acc: %f\n", acc);
+}
+
+void set_trsl_dec(Queue* in){
+  printf("translation dec okay\n");
+  float acc = unpackfloat(in);
+  printf("dec: %f\n", acc);
+}
+
+void set_trsl_max(Queue* in){
+  printf("translation max speed okay\n");
+  float acc = unpackfloat(in);
+  printf("max: %f\n", acc);
+}
+
+void set_rot_acc(Queue* in){
+  printf("rotation acceleration okay\n");
+  float acc = unpackfloat(in);
+  printf("acc: %f\n", acc);
+}
+
+void set_rot_dec(Queue* in){
+  printf("rotation dec okay\n");
+  float acc = unpackfloat(in);
+  printf("dec: %f\n", acc);
+}
+
+void set_rot_max(Queue* in){
+  printf("rotation max speed okay\n");
+  float acc = unpackfloat(in);
+  printf("max: %f\n", acc);
+}
+
+void set_delta_max_rot(Queue* in){
+  printf("delta max rotation okay\n");
+  float max = unpackfloat(in);
+  printf("max: %f\n", max);
+}
+
+void set_delta_max_trsl(Queue* in){
+  printf("delta max translation okay\n");
+  float max = unpackfloat(in);
+  printf("max: %f\n", max);
+}
+
+void set_telemetry(Queue* in){
+  printf("telemetry activated\n");
+  uint8_t status = dequeue(in);
+  printf("status: %i\n", status);
+}
+
 void acknowledge(Queue * out){
   enqueue(out, 2);
   enqueue(out, ACKNOWLEDGE);
@@ -45,7 +115,6 @@ void dispatcher(Queue* in, Queue* out, pthread_mutex_t *mutex){
   if (!is_empty(in)){
     uint8_t packet_length = queue_head(in);
     if (in->count >= packet_length){
-   // printf("elt: %i", q->head->elt);
       uint8_t count = dequeue(in);
       t_command command = dequeue(in);
 
@@ -54,58 +123,56 @@ void dispatcher(Queue* in, Queue* out, pthread_mutex_t *mutex){
           init(in);
           acknowledge(out);
           break;
-
         case SET_DIAM_WHEELS:
           set_diam_wheels(in);
           acknowledge(out);
           break;
-
         case SET_WHEELS_SPACING:
           set_wheels_spacing(in);
           acknowledge(out);
           break;
-
         case SET_PID_TRSL:
+          set_pid_trsl(in);
           acknowledge(out);
           break;
-
         case SET_PID_ROT:
+          set_pid_rot(in);
           acknowledge(out);
           break;
-
         case SET_TRSL_ACC:
+          set_trsl_acc(in);
           acknowledge(out);
           break;
-
         case SET_TRSL_DEC:
+          set_trsl_dec(in);
           acknowledge(out);
           break;
-
         case SET_TRSL_MAXSPEED:
+          set_trsl_max(in);
           acknowledge(out);
           break;
-
         case SET_ROT_ACC:
+          set_rot_acc(in);
           acknowledge(out);
           break;
-
         case SET_ROT_DEC:
+          set_rot_dec(in);
           acknowledge(out);
           break;
-
         case SET_ROT_MAXSPEED:
+          set_rot_max(in);
           acknowledge(out);
           break;
-
         case SET_DELTA_MAX_ROT:
+          set_delta_max_rot(in);
           acknowledge(out);
           break;
-
         case SET_DELTA_MAX_TRSL:
+          set_delta_max_trsl(in);
           acknowledge(out);
           break;
-
         case SET_TELEMETRY:
+          set_telemetry(in);
           acknowledge(out);
           break;
 
