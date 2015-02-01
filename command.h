@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <pthread.h>
+#include "robot.h"
 #include "queue.h"
 
 typedef enum{
@@ -50,33 +51,24 @@ typedef enum{
   ERROR              = 255
 } t_command;
 
-
-typedef struct{
-  float xpos;
-  float ypos;
-  float theta;
-  float vdep;
-  float omega;
-  float vG, vD;
-  float diamrG,diamrD;
-  float distroues;
-  float olddist;
-  float oldth;
-  float indexG;
-  float indexD;
-  float wpX;
-  float wpY;
-  float wpTheta;
-  float futur_x;
-  float futur_y;
-  float trp, tri, trd;
-  float rtp, rti, rtd;
-  int moving;
-  int recalage;
-
-} t_robot;
+typedef enum{
+  COULD_NOT_READ          = 1,
+  DESTINATION_UNREACHABLE = 2,
+  BAD_ORDER               = 3
+} t_errors;
 
 
+void set_pid_trsl(Queue* q);
+void set_pid_rot(Queue* q);
+void set_trsl_max(Queue* q);
+void set_trsl_dec(Queue* q);
+void set_trsl_acc(Queue* q);
+void set_rot_dec(Queue* q);
+void set_rot_acc(Queue* q);
+void set_rot_max(Queue* q);
+void set_delta_max_rot(Queue* q);
+void set_delta_max_trsl(Queue *q);
+void set_telemetry(Queue* q);
 void set_diam_wheels(Queue *q);
 void set_wheels_spacing(Queue *q);
 void init(Queue* q);

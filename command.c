@@ -1,5 +1,8 @@
 #include "command.h"
 
+t_robot robot;
+s_default defaults;
+
 float unpackfloat(Queue* q){
   f_conv conv;
   conv.b[0] = dequeue(q);
@@ -22,14 +25,17 @@ void init(Queue *q){
 void set_diam_wheels(Queue* in){
   printf("diam wheels set \n");
   float g = unpackfloat(in);
+  robot.diamG = g;
   printf("left wheel: %f\n", g);
   float d = unpackfloat(in);
+  robot.diamD = d;
   printf("right wheel: %f\n", g);
 }
 
 void set_wheels_spacing(Queue* in){
   printf("wheels spacing set\n");
   float spac = unpackfloat(in);
+  robot.distroues = spac;
   printf("spacing: %f\n", spac);
 }
 
@@ -52,54 +58,64 @@ void set_pid_rot(Queue* in){
 void set_trsl_acc(Queue* in){
   printf("translation acceleration okay\n");
   float acc = unpackfloat(in);
+  defaults.trsl_acc = acc;
   printf("acc: %f\n", acc);
 }
 
 void set_trsl_dec(Queue* in){
   printf("translation dec okay\n");
-  float acc = unpackfloat(in);
-  printf("dec: %f\n", acc);
+  float dec = unpackfloat(in);
+  defaults.trsl_dec = dec;
+  printf("dec: %f\n", dec);
 }
 
 void set_trsl_max(Queue* in){
   printf("translation max speed okay\n");
-  float acc = unpackfloat(in);
-  printf("max: %f\n", acc);
+  float max = unpackfloat(in);
+  defaults.trsl_max = max;
+  printf("max: %f\n", max);
 }
 
 void set_rot_acc(Queue* in){
   printf("rotation acceleration okay\n");
   float acc = unpackfloat(in);
+  defaults.rot_acc = acc;
   printf("acc: %f\n", acc);
 }
 
 void set_rot_dec(Queue* in){
   printf("rotation dec okay\n");
-  float acc = unpackfloat(in);
-  printf("dec: %f\n", acc);
+  float dec = unpackfloat(in);
+  defaults.rot_dec = dec;
+  printf("dec: %f\n", dec);
 }
 
 void set_rot_max(Queue* in){
   printf("rotation max speed okay\n");
-  float acc = unpackfloat(in);
-  printf("max: %f\n", acc);
+  float max = unpackfloat(in);
+  defaults.rot_max = max;
+  printf("max: %f\n", max);
 }
 
 void set_delta_max_rot(Queue* in){
   printf("delta max rotation okay\n");
   float max = unpackfloat(in);
+  defaults.delta_trsl_max;
   printf("max: %f\n", max);
 }
 
 void set_delta_max_trsl(Queue* in){
   printf("delta max translation okay\n");
   float max = unpackfloat(in);
+  defaults.delta_rot_max;
   printf("max: %f\n", max);
 }
 
 void set_telemetry(Queue* in){
   printf("telemetry activated\n");
   uint8_t status = dequeue(in);
+  defaults.time = 0;
+  defaults.telemetry = status;
   printf("status: %i\n", status);
 }
 
@@ -107,6 +123,13 @@ void acknowledge(Queue * out){
   enqueue(out, 2);
   enqueue(out, ACKNOWLEDGE);
   printf(" << acknowledge >>\n");
+}
+
+void send_error(Queue* out, t_errors error){
+  enqueue(out, 3);
+  enqueue(out, ERROR);
+  enqueue(out, error);
+  printf(" << error send >>\n");
 }
 
 
@@ -177,6 +200,7 @@ void dispatcher(Queue* in, Queue* out, pthread_mutex_t *mutex){
           break;
 
       default:
+          send_error(out, COULD_NOT_READ);
           break;
       }
     }
