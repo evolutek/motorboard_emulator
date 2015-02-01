@@ -36,9 +36,43 @@ void goto_theta(Queue* in){
 }
 
 void execute_free(Queue* in){
-  default.free();
+  defaults.free = 1;
+  printf ("free!\n");
 }
 
+void move_trsl(Queue* in){
+  float acc, dec, max, dest;
+  int sens;
+  dest = unpackfloat(in);
+  acc = unpackfloat(in);
+  dec = unpackfloat(in);
+  max = unpackfloat(in);
+  sens = dequeue(in);
+  sens &= 1;
+  sens = (sens == 1) ? 1 : -1;
+  printf ("move trsl\n dest: %f; acc: %f; dec: %f; \
+    max: %f; sens: %i\n", dest,acc,dest,max,sens);
+  /* for emulation
+  need to manage over-queuing (cf. motor board code)
+  */
+}
+
+void move_rot(Queue* in){
+  float acc, dec, max, dest;
+  int sens;
+  dest = unpackfloat(in);
+  acc = unpackfloat(in);
+  dec = unpackfloat(in);
+  max = unpackfloat(in);
+  sens = dequeue(in);
+  sens &= 1;
+  sens = (sens == 1) ? 1 : -1;
+  printf ("move rot\n dest: %f; acc: %f; dec: %f; \
+    max: %f; sens: %i\n", dest,acc,dest,max,sens);
+  /* for emulation
+  need to manage over-queuing (cf. motor board code)
+  */
+}
 
 
 void set_diam_wheels(Queue* in){
@@ -223,6 +257,18 @@ void dispatcher(Queue* in, Queue* out, pthread_mutex_t *mutex){
           break;
         case GOTO_THETA:
           goto_theta(in);
+          acknowledge(out);
+          break;
+        case FREE:
+          execute_free(in);
+          acknowledge(out);
+          break;
+        case MOVE_TRSL:
+          move_trsl(in);
+          acknowledge(out);
+          break;
+        case MOVE_ROT:
+          move_rot(in);
           acknowledge(out);
           break;
 

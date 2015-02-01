@@ -58,6 +58,11 @@ typedef enum{
 } t_errors;
 
 
+void move_trsl(Queue* q);
+void move_rot(Queue* q);
+void goto_xy(Queue* q);
+void goto_theta(Queue* q);
+void execute_free(Queue* q);
 void set_pid_trsl(Queue* q);
 void set_pid_rot(Queue* q);
 void set_trsl_max(Queue* q);
