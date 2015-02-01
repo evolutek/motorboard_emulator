@@ -1,8 +1,12 @@
 #ifndef _COMMAND_H
 #define _COMMAND_H
 
+#define _GNU_SOURCE
+#define PI 3.14159265
+
 #include <stdio.h>
 #include <stdint.h>
+#include <math.h>
 #include <pthread.h>
 #include "robot.h"
 #include "queue.h"
@@ -63,6 +67,7 @@ void move_rot(Queue* q);
 void goto_xy(Queue* q);
 void goto_theta(Queue* q);
 void execute_free(Queue* q);
+void stop_asap(Queue* q);
 void set_pid_trsl(Queue* q);
 void set_pid_rot(Queue* q);
 void set_trsl_max(Queue* q);
@@ -74,8 +79,13 @@ void set_rot_max(Queue* q);
 void set_delta_max_rot(Queue* q);
 void set_delta_max_trsl(Queue *q);
 void set_telemetry(Queue* q);
+void set_debug(Queue* q);
 void set_diam_wheels(Queue *q);
 void set_wheels_spacing(Queue *q);
+void set_pwm(Queue* q);
+void set_x(Queue* q);
+void set_y(Queue* q);
+void set_theta(Queue* q);
 void init(Queue* q);
 void acknowledge(Queue * out);
 void dispatcher(Queue* in, Queue* out, pthread_mutex_t *mutex);

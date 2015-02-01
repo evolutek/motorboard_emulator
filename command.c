@@ -3,6 +3,15 @@
 t_robot robot;
 s_default defaults;
 
+void packfloat(Queue* q, float f){
+  f_conv conv;
+  conv.f = f;
+  enqueue(q, conv.b[0]);
+  enqueue(q, conv.b[1]);
+  enqueue(q, conv.b[2]);
+  enqueue(q, conv.b[3]);
+}
+
 float unpackfloat(Queue* q){
   f_conv conv;
   conv.b[0] = dequeue(q);
@@ -74,6 +83,39 @@ void move_rot(Queue* in){
   */
 }
 
+void set_x(Queue* in){
+  float x = unpackfloat(in);
+  robot.xpos = x;
+  printf ("set x: %f\n", x);
+}
+
+void set_y(Queue* in){
+  float y = unpackfloat(in);
+  robot.ypos = y;
+  printf ("set y: %f\n", y);
+}
+
+void set_theta(Queue* in){
+  float angle = 0;
+  float angle_tmp = unpackfloat(in);
+  if (!isnan(angle_tmp)){
+    float d = floor(angle_tmp/(2.f*PI))+
+      ((angle_tmp/(2.f*PI))<0)? 1.f : 0.f ;
+    float angle = angle_tmp - d * 2.f *PI;
+    if (angle > PI)
+      angle -= 2.f* PI;
+    else if (angle < -PI)
+      angle += 2.f* PI;
+  }
+  robot.theta = angle;
+  printf ("set theta: %f\n", angle);
+}
+
+void set_pwm(Queue* in){
+  float f1 = unpackfloat(in);
+  float f2 = unpackfloat(in);
+  printf ("set pwm\n");
+}
 
 void set_diam_wheels(Queue* in){
   printf("diam wheels set \n");
@@ -164,12 +206,23 @@ void set_delta_max_trsl(Queue* in){
   printf("max: %f\n", max);
 }
 
+void stop_asap(Queue* in){
+  printf("stop asap\n");
+  unpackfloat(in);
+  unpackfloat(in);
+}
+
 void set_telemetry(Queue* in){
   printf("telemetry activated\n");
   uint8_t status = dequeue(in);
   defaults.time = 0;
   defaults.telemetry = status;
   printf("status: %i\n", status);
+}
+
+void set_debug(Queue* in){
+  defaults.time = 0;
+  defaults.debug = dequeue(in);
 }
 
 void acknowledge(Queue * out){
@@ -247,8 +300,28 @@ void dispatcher(Queue* in, Queue* out, pthread_mutex_t *mutex){
           set_delta_max_trsl(in);
           acknowledge(out);
           break;
+        case SET_PWM:
+          set_pwm(in);
+          acknowledge(out);
+          break;
+        case SET_X:
+          set_x(in);
+          acknowledge(out);
+          break;
+        case SET_Y:
+          set_y(in);
+          acknowledge(out);
+          break;
+        case SET_THETA:
+          set_theta(in);
+          acknowledge(out);
+          break;
         case SET_TELEMETRY:
           set_telemetry(in);
+          acknowledge(out);
+          break;
+        case SET_DEBUG:
+          set_debug(in);
           acknowledge(out);
           break;
         case GOTO_XY:
@@ -261,6 +334,10 @@ void dispatcher(Queue* in, Queue* out, pthread_mutex_t *mutex){
           break;
         case FREE:
           execute_free(in);
+          acknowledge(out);
+          break;
+        case STOP_ASAP:
+          stop_asap(in);
           acknowledge(out);
           break;
         case MOVE_TRSL:
