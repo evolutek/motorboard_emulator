@@ -19,6 +19,25 @@ void init(Queue *q){
     printf ("error: init sequence...");
 }
 
+void goto_xy(Queue* in){
+  float x,y;
+  x = unpackfloat(in);
+  y = unpackfloat(in);
+  printf ("goto x: %f; y: %f\n", x,y);
+}
+
+void goto_theta(Queue* in){
+  float theta;
+  theta = unpackfloat(in);
+  printf ("goto theta: %f\n", theta);
+}
+
+void execute_free(Queue* in){
+  default.free();
+}
+
+
+
 void set_diam_wheels(Queue* in){
   printf("diam wheels set \n");
   float g = unpackfloat(in);
@@ -173,6 +192,14 @@ void dispatcher(Queue* in, Queue* out, pthread_mutex_t *mutex){
           break;
         case SET_TELEMETRY:
           set_telemetry(in);
+          acknowledge(out);
+          break;
+        case GOTO_XY:
+          goto_xy(in);
+          acknowledge(out);
+          break;
+        case GOTO_THETA:
+          goto_theta(in);
           acknowledge(out);
           break;
 
