@@ -49,6 +49,14 @@ void execute_free(Queue* in){
   printf ("free!\n");
 }
 
+void execute_recalage(Queue* in){
+  robot.recalage = 1;
+  uint8_t t1 = dequeue(in);
+
+  robot.cntl = -500;
+  robot.cntr = -500;
+}
+
 void move_trsl(Queue* in){
   float acc, dec, max, dest;
   int sens;
@@ -225,6 +233,13 @@ void set_debug(Queue* in){
   defaults.debug = dequeue(in);
 }
 
+void curve(Queue* in){
+  float tm, td, ta, tde;
+  float rm, rd, ra, rde;
+
+
+}
+
 void acknowledge(Queue * out){
   enqueue(out, 2);
   enqueue(out, ACKNOWLEDGE);
@@ -346,6 +361,10 @@ void dispatcher(Queue* in, Queue* out, pthread_mutex_t *mutex){
           break;
         case MOVE_ROT:
           move_rot(in);
+          acknowledge(out);
+          break;
+        case RECALAGE:
+          execute_recalage(in);
           acknowledge(out);
           break;
 

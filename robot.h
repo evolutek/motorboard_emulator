@@ -25,6 +25,7 @@ typedef struct{
   float rtp,rti,rtd;
   int moving;
   int recalage;
+  int32_t cntl, cntr;
 } t_robot;
 
 typedef struct{

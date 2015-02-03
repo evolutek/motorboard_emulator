@@ -67,6 +67,7 @@ void move_rot(Queue* q);
 void goto_xy(Queue* q);
 void goto_theta(Queue* q);
 void execute_free(Queue* q);
+void execute_recalage(Queue* q);
 void stop_asap(Queue* q);
 void set_pid_trsl(Queue* q);
 void set_pid_rot(Queue* q);
