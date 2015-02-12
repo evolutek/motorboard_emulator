@@ -236,8 +236,21 @@ void set_debug(Queue* in){
 void curve(Queue* in){
   float tm, td, ta, tde;
   float rm, rd, ra, rde;
+  td = unpackfloat(in);
+  ta = unpackfloat(in);
+  tde = unpackfloat(in);
+  tm = unpackfloat(in);
 
+  rd = unpackfloat(in);
+  ra = unpackfloat(in);
+  rde = unpackfloat(in);
+  rm = unpackfloat(in);
 
+  int sens = dequeue(in);
+}
+
+void getPosition(Queue* in){
+  i
 }
 
 void acknowledge(Queue * out){
@@ -365,6 +378,10 @@ void dispatcher(Queue* in, Queue* out, pthread_mutex_t *mutex){
           break;
         case RECALAGE:
           execute_recalage(in);
+          acknowledge(out);
+          break;
+        case CURVE:
+          curve(in);
           acknowledge(out);
           break;
 
