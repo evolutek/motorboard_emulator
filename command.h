@@ -11,6 +11,8 @@
 #include "robot.h"
 #include "queue.h"
 
+#define floor(p) (float)((int)p)
+
 typedef enum{
   DEBUG_MESSAGE      = 127,
   DEBUG              = 126,
