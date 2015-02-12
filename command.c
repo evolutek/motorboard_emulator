@@ -223,6 +223,7 @@ void stop_asap(Queue* in){
 void set_telemetry(Queue* in){
   printf("telemetry activated\n");
   uint8_t status = dequeue(in);
+  dequeue(in);
   defaults.time = 0;
   defaults.telemetry = status;
   printf("status: %i\n", status);
@@ -250,7 +251,7 @@ void curve(Queue* in){
 }
 
 void getPosition(Queue* in){
-  i
+  
 }
 
 void acknowledge(Queue * out){
@@ -344,7 +345,7 @@ void dispatcher(Queue* in, Queue* out, pthread_mutex_t *mutex){
           set_theta(in);
           acknowledge(out);
           break;
-        case SET_TELEMETRY:
+        case TELEMETRY:
           set_telemetry(in);
           acknowledge(out);
           break;
@@ -386,6 +387,7 @@ void dispatcher(Queue* in, Queue* out, pthread_mutex_t *mutex){
           break;
 
       default:
+          printf ("/!\\ command error: %i\n", command);
           send_error(out, COULD_NOT_READ);
           break;
       }

@@ -52,7 +52,7 @@ typedef enum{
   SET_DELTA_MAX_ROT  = 163,
   SET_DELTA_MAX_TRSL = 164,
   SET_DEBUG          = 200,
-  SET_TELEMETRY      = 201,
+  TELEMETRY          = 201,
   INIT               = 254,
   ERROR              = 255
 } t_command;
