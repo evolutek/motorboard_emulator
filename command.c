@@ -260,6 +260,19 @@ void getPosition(Queue* out){
     printf("send the position");
 }
 
+void getPIDtrsl(Queue* out){
+    float p,i,d;
+    p = 0;
+    i = 0;
+    d = 0;
+
+   // to do 
+}
+
+void getPIDRot(){
+    // to do
+}
+
 void acknowledge(Queue * out){
   enqueue(out, 2);
   enqueue(out, ACKNOWLEDGE);

@@ -64,6 +64,7 @@ typedef enum{
 } t_errors;
 
 
+void getPosition(Queue* q);
 void curve(Queue* q);
 void move_trsl(Queue* q);
 void move_rot(Queue* q);
