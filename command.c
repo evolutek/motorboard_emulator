@@ -250,8 +250,14 @@ void curve(Queue* in){
   int sens = dequeue(in);
 }
 
-void getPosition(Queue* in){
-  
+void getPosition(Queue* out){
+    float xpos = robot.xpos;
+    float ypos = robot.ypos;
+    float theta = robot.theta;
+    packfloat(out, xpos);
+    packfloat(out, ypos);
+    packfloat(out, theta);
+    printf("send the position");
 }
 
 void acknowledge(Queue * out){
@@ -384,6 +390,10 @@ void dispatcher(Queue* in, Queue* out, pthread_mutex_t *mutex){
         case CURVE:
           curve(in);
           acknowledge(out);
+          break;
+        case GET_POSITION:
+          acknowledge(out);
+          getPosition(out);
           break;
 
       default:

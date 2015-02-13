@@ -2,6 +2,7 @@
 #define _ROBOT_H
 
 #include <stdio.h>
+#include <stdint.h>
 
 typedef struct{
   float xpos;

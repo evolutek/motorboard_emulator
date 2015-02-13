@@ -1,8 +1,8 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "interface.h"
 #include "command.h"
-#include <stdint.h>
 #include "queue.h"
 #include <pthread.h>
 #include <unistd.h>
