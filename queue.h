@@ -20,7 +20,7 @@ typedef struct{
 void create_queue(Queue* q);
 void enqueue(Queue* q, uint8_t elt);
 uint8_t dequeue(Queue* q);
-int is_empty();
+int is_empty(Queue* q);
 void print_queue(Queue* q);
 uint8_t queue_head(Queue* q);
 
