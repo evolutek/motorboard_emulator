@@ -3,7 +3,7 @@
 t_robot robot;
 s_default defaults;
 
-void packfloat(Queue* q, float f){
+static void packfloat(Queue* q, float f){
   f_conv conv;
   conv.f = f;
   enqueue(q, conv.b[0]);
@@ -12,7 +12,7 @@ void packfloat(Queue* q, float f){
   enqueue(q, conv.b[3]);
 }
 
-float unpackfloat(Queue* q){
+static float unpackfloat(Queue* q){
   f_conv conv;
   conv.b[0] = dequeue(q);
   conv.b[1] = dequeue(q);
@@ -21,7 +21,7 @@ float unpackfloat(Queue* q){
   return conv.f;
 }
 
-void init(Queue *q){
+static void init(Queue *q){
   uint8_t t1 = dequeue(q);
   uint8_t t2 = dequeue(q);
   uint8_t t3 = dequeue(q);
@@ -31,25 +31,25 @@ void init(Queue *q){
     printf ("%serror: init sequence...", KRED);
 }
 
-void goto_xy(Queue* in){
+static void goto_xy(Queue* in){
   float x,y;
   x = unpackfloat(in);
   y = unpackfloat(in);
   printf ("%sgoto x: %f; y: %f\n",KNRM, x,y);
 }
 
-void goto_theta(Queue* in){
+static void goto_theta(Queue* in){
   float theta;
   theta = unpackfloat(in);
   printf ("%sgoto theta: %f\n", KNRM, theta);
 }
 
-void execute_free(Queue* in){
+static void execute_free(Queue* in){
   defaults.free = 1;
   printf ("%sfree!\n", KNRM);
 }
 
-void execute_recalage(Queue* in){
+static void execute_recalage(Queue* in){
   robot.recalage = 1;
   uint8_t t1 = dequeue(in);
 
@@ -57,7 +57,7 @@ void execute_recalage(Queue* in){
   robot.cntr = -500;
 }
 
-void move_trsl(Queue* in){
+static void move_trsl(Queue* in){
   float acc, dec, max, dest;
   int sens;
   dest = unpackfloat(in);
@@ -74,7 +74,7 @@ void move_trsl(Queue* in){
   */
 }
 
-void move_rot(Queue* in){
+static void move_rot(Queue* in){
   float acc, dec, max, dest;
   int sens;
   dest = unpackfloat(in);
@@ -91,22 +91,22 @@ void move_rot(Queue* in){
   */
 }
 
-void set_x(Queue* in){
+static void set_x(Queue* in){
   float x = unpackfloat(in);
   robot.xpos = x;
   printf ("%sset x: %f\n",KNRM, x);
 }
 
-void set_y(Queue* in){
+static void set_y(Queue* in){
   float y = unpackfloat(in);
   robot.ypos = y;
   printf ("%sset y: %f\n",KNRM, y);
 }
 
-void set_theta(Queue* in){
+static void set_theta(Queue* in){
   float angle = 0;
   float angle_tmp = unpackfloat(in);
-  if (!isnan(angle_tmp)){
+ /* if (!isnan(angle_tmp)){
     float d = floor(angle_tmp/(2.f*PI))+
       ((angle_tmp/(2.f*PI))<0)? 1.f : 0.f ;
     float angle = angle_tmp - d * 2.f *PI;
@@ -114,18 +114,18 @@ void set_theta(Queue* in){
       angle -= 2.f* PI;
     else if (angle < -PI)
       angle += 2.f* PI;
-  }
-  robot.theta = angle;
-  printf ("%sset theta: %f\n", KNRM, angle);
+  }*/
+  robot.theta = angle_tmp;
+  printf ("%sset theta: %f\n", KNRM, angle_tmp);
 }
 
-void set_pwm(Queue* in){
+static void set_pwm(Queue* in){
   float f1 = unpackfloat(in);
   float f2 = unpackfloat(in);
   printf ("%sset pwm\n", KNRM);
 }
 
-void set_diam_wheels(Queue* in){
+static void set_diam_wheels(Queue* in){
   printf("%sdiam wheels set \n", KNRM);
   float g = unpackfloat(in);
   robot.diamG = g;
@@ -135,14 +135,14 @@ void set_diam_wheels(Queue* in){
   printf("%sright wheel: %f\n", KNRM, g);
 }
 
-void set_wheels_spacing(Queue* in){
+static void set_wheels_spacing(Queue* in){
   printf("%swheels spacing set\n", KNRM);
   float spac = unpackfloat(in);
   robot.distroues = spac;
   printf("%sspacing: %f\n", KNRM, spac);
 }
 
-void set_pid_trsl(Queue* in){
+static void set_pid_trsl(Queue* in){
   printf("%spid translation okay\n", KNRM);
   float p = unpackfloat(in);
   float i = unpackfloat(in);
@@ -150,7 +150,7 @@ void set_pid_trsl(Queue* in){
   printf("%sp: %f; i: %f; d: %f\n", KNRM, p,i,d);
 }
 
-void set_pid_rot(Queue* in){
+static void set_pid_rot(Queue* in){
   printf("%spid rotation okay\n", KNRM);
   float p = unpackfloat(in);
   float i = unpackfloat(in);
@@ -158,69 +158,69 @@ void set_pid_rot(Queue* in){
   printf("%sp: %f; i: %f; d: %f\n", KNRM, p,i,d);
 }
 
-void set_trsl_acc(Queue* in){
+static void set_trsl_acc(Queue* in){
   printf("%stranslation acceleration okay\n", KNRM);
   float acc = unpackfloat(in);
   defaults.trsl_acc = acc;
   printf("%sacc: %f\n", KNRM, acc);
 }
 
-void set_trsl_dec(Queue* in){
+static void set_trsl_dec(Queue* in){
   printf("%stranslation dec okay\n", KNRM);
   float dec = unpackfloat(in);
   defaults.trsl_dec = dec;
   printf("%sdec: %f\n", KNRM, dec);
 }
 
-void set_trsl_max(Queue* in){
+static void set_trsl_max(Queue* in){
   printf("%stranslation max speed okay\n", KNRM);
   float max = unpackfloat(in);
   defaults.trsl_max = max;
   printf("%smax: %f\n", KNRM, max);
 }
 
-void set_rot_acc(Queue* in){
+static void set_rot_acc(Queue* in){
   printf("%srotation acceleration okay\n", KNRM);
   float acc = unpackfloat(in);
   defaults.rot_acc = acc;
   printf("%sacc: %f\n", KNRM, acc);
 }
 
-void set_rot_dec(Queue* in){
+static void set_rot_dec(Queue* in){
   printf("%srotation dec okay\n", KNRM);
   float dec = unpackfloat(in);
   defaults.rot_dec = dec;
   printf("%sdec: %f\n", KNRM, dec);
 }
 
-void set_rot_max(Queue* in){
+static void set_rot_max(Queue* in){
   printf("%srotation max speed okay\n", KNRM);
   float max = unpackfloat(in);
   defaults.rot_max = max;
   printf("%smax: %f\n", KNRM, max);
 }
 
-void set_delta_max_rot(Queue* in){
+static void set_delta_max_rot(Queue* in){
   printf("%sdelta max rotation okay\n", KNRM);
   float max = unpackfloat(in);
   defaults.delta_trsl_max;
   printf("%smax: %f\n", KNRM, max);
 }
 
-void set_delta_max_trsl(Queue* in){
+static void set_delta_max_trsl(Queue* in){
   printf("%sdelta max translation okay\n", KNRM);
   float max = unpackfloat(in);
   defaults.delta_rot_max;
   printf("%smax: %f\n", KNRM, max);
 }
 
-void stop_asap(Queue* in){
+static void stop_asap(Queue* in){
   printf("%sstop asap\n",KNRM);
   unpackfloat(in);
   unpackfloat(in);
 }
 
-void set_telemetry(Queue* in){
+static void set_telemetry(Queue* in){
   printf("%stelemetry activated\n", KNRM);
   uint8_t status = dequeue(in);
   dequeue(in);
@@ -229,12 +229,12 @@ void set_telemetry(Queue* in){
   printf("%sstatus: %i\n", KNRM, status);
 }
 
-void set_debug(Queue* in){
+static void set_debug(Queue* in){
   defaults.time = 0;
   defaults.debug = dequeue(in);
 }
 
-void curve(Queue* in){
+static void curve(Queue* in){
   float tm, td, ta, tde;
   float rm, rd, ra, rde;
   td = unpackfloat(in);
@@ -250,7 +250,7 @@ void curve(Queue* in){
   int sens = dequeue(in);
 }
 
-void getPosition(Queue* out){
+static void getPosition(Queue* out){
     float xpos = robot.xpos;
     float ypos = robot.ypos;
     float theta = robot.theta;
@@ -261,28 +261,101 @@ void getPosition(Queue* out){
     packfloat (out, xpos);
     packfloat (out, ypos);
     packfloat (out, theta);
+    printf ("%sposition send\n", KNRM);
 }
 
-void getPIDtrsl(Queue* out){
-    float p,i,d;
-    p = 0;
-    i = 0;
-    d = 0;
-
-   // to do
+static void getPIDtrsl(Queue* out){
+    enqueue (out, 14);
+    enqueue (out, GET_PID_TRSL);
+    packfloat (out, 0);
+    packfloat (out, 0);
+    packfloat (out, 0);
+    printf ("%s/!\\pid not implemented\n", KRED);
 }
 
-void getPIDRot(){
-    // to do
+static void getPIDRot(Queue* out){
+    enqueue (out, 14);
+    enqueue (out, GET_PID_ROT);
+    packfloat (out, 0);
+    packfloat (out, 0);
+    packfloat (out, 0);
+    printf ("%s/!\\pid not implemented\n", KRED);
 }
 
-void acknowledge(Queue * out){
+static void getSpeed (Queue* out) {
+  float trsl_dec = defaults.trsl_dec;
+  float trsl_acc = defaults.trsl_acc;
+  float trsl_max = defaults.trsl_max;
+
+  float rot_dec = defaults.rot_dec;
+  float rot_acc = defaults.rot_acc;
+  float rot_max = defaults.rot_max;
+
+  enqueue (out, 26);
+  enqueue (out, GET_SPEEDS);
+  packfloat (out, trsl_acc);
+  packfloat (out, trsl_dec);
+  packfloat (out, trsl_max);
+  packfloat (out, rot_acc);
+  packfloat (out, rot_dec);
+  packfloat (out, rot_max);
+  
+  printf ("%sspeed send !", KNRM);
+}
+
+static void getWheels (Queue* out) {
+  float distroues = robot.distroues;
+  float diamG = robot.diamG;
+  float diamD = robot.diamD;
+
+  enqueue (out, 14);
+  enqueue (out, GET_WHEELS);
+  packfloat (out, distroues);
+  packfloat (out, diamG);
+  packfloat (out, diamD);
+
+  printf ("%swheels send !", KNRM);
+}
+
+static void getDeltaMax (Queue* out) {
+  float delta_trsl_max = defaults.delta_trsl_max;
+  float delta_rot_max = defaults.delta_rot_max;
+  
+  enqueue (out, 10);
+  enqueue (out, GET_DELTA_MAX);
+  packfloat (out, delta_trsl_max);
+  packfloat (out, delta_rot_max);
+
+  printf ("%sdelta max send !", KNRM);
+}
+
+static void getVectorTrsl (Queue* out) {
+  float v = 0;
+
+  enqueue (out, 6);
+  enqueue (out, GET_VECTOR_TRSL);
+  packfloat (out, v);
+
+  printf ("%s/!\\pid not implemented\n", KRED);
+}
+
+static void getVectorRot (Queue* out) {
+  float v = 0;
+
+  enqueue (out, 6);
+  enqueue (out, GET_VECTOR_TRSL);
+  packfloat (out, v);
+
+  printf ("%s/!\\pid not implemented\n", KRED);
+}
+
+static void acknowledge(Queue * out){
   enqueue(out, 2);
   enqueue(out, ACKNOWLEDGE);
   printf("%s << acknowledge >>\n", KYEL);
 }
 
-void send_error(Queue* out, t_errors error){
+static void send_error(Queue* out, t_errors error){
   enqueue(out, 3);
   enqueue(out, ERROR);
   enqueue(out, error);
@@ -290,7 +363,7 @@ void send_error(Queue* out, t_errors error){
 }
 
 
-void dispatcher(Queue* in, Queue* out, pthread_mutex_t *mutex){
+extern void dispatcher(Queue* in, Queue* out, pthread_mutex_t *mutex){
   pthread_mutex_lock(mutex);
   if (!is_empty(in)){
     uint8_t packet_length = queue_head(in);
@@ -411,7 +484,27 @@ void dispatcher(Queue* in, Queue* out, pthread_mutex_t *mutex){
         case GET_POSITION:
           getPosition(out);
           break;
-
+        case GET_PID_TRSL:
+          getPIDtrsl(out);
+          break;
+        case GET_PID_ROT:
+          getPIDRot(out);
+          break;
+        case GET_SPEEDS:
+          getSpeed(out);
+          break;
+        case GET_WHEELS:
+          getWheels(out);
+          break;
+        case GET_DELTA_MAX:
+          getDeltaMax(out);
+          break;
+        case GET_VECTOR_TRSL:
+          getVectorTrsl (out);
+          break;
+        case GET_VECTOR_ROT:
+          getVectorRot (out);
+          break;
       default:
           printf ("/!\\ command error: %i\n", command);
           send_error(out, COULD_NOT_READ);
