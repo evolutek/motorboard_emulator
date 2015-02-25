@@ -10,7 +10,7 @@ all: $(EXEC)
 mb_emu: $(OBJ)
 	$(CC) -o $@ $^ $(LDFLAGS)
 
-main.o: command.h interface.h queue.h robot.h
+main.o: command.h interface.h queue.h robot.h colored_print.h
 
 %.o: %.c
 	$(CC) -o $@ $(CFLAGS) -c $<

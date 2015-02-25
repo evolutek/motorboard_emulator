@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <utmp.h>
 #include <stdint.h>
+#include "colored_print.h"
 #include "queue.h"
 
 int connect_pty(int *fd);

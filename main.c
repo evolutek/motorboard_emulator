@@ -21,10 +21,11 @@ static void* serial_simulation(void * p_data){
   connect_pty(&fd);
   while (1){
    int8_t elt = read_pty(&fd);
+    if (data->output.count != 0)
+      print_queue(&data->output);
    pthread_mutex_lock(&data->mutex);
    enqueue(&data->input, elt);
    send_to_trajman(&fd, &data->output);
-   //print_queue(&data->input);
    pthread_mutex_unlock(&data->mutex);
   }
   return NULL;
@@ -34,7 +35,6 @@ static void* manage_commands(void * p_data){
   data_t* data = (data_t*)p_data;
   while(1){
     dispatcher(&data->input, &data->output, &data->mutex);
-    //print_queue(&data->input);
   }
   return NULL;
 }

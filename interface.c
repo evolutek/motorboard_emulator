@@ -3,10 +3,10 @@
 int connect_pty(int *fd){
   int fd_m, fd_s;
   if(openpty(&fd_m, &fd_s,NULL,NULL,NULL)){
-    printf("openpty error...");
+    printf("%sopenpty error...", KRED);
     return -1;
   }
-  printf("device: %s\n",ptsname(fd_m));
+  printf("%sdevice: %s\n",KGRN,ptsname(fd_m));
 
   login_tty(fd_m);
   *fd = fd_m;

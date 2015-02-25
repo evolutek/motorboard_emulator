@@ -10,6 +10,7 @@
 #include <pthread.h>
 #include "robot.h"
 #include "queue.h"
+#include "colored_print.h"
 
 #define floor(p) (float)((int)p)
 
