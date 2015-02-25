@@ -251,16 +251,16 @@ void curve(Queue* in){
 }
 
 void getPosition(Queue* out){
-  /*  float xpos = 0;
-    float ypos = 0;
-    float theta = 0;*/
-    printf ("ca marcheu presk");
+    float xpos = robot.xpos;
+    float ypos = robot.ypos;
+    float theta = robot.theta;
 
 
     enqueue (out, 14); // length
     enqueue (out, GET_POSITION); // command
-    enqueue (out, 0);
-    enqueue (out, 0);
+    packfloat (out, xpos);
+    packfloat (out, ypos);
+    packfloat (out, theta);
 }
 
 void getPIDtrsl(Queue* out){
@@ -409,9 +409,7 @@ void dispatcher(Queue* in, Queue* out, pthread_mutex_t *mutex){
           acknowledge(out);
           break;
         case GET_POSITION:
-          printf ("indeed\n");
           getPosition(out);
-          printf ("pass fun\n");
           break;
 
       default:
