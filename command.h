@@ -64,7 +64,6 @@ typedef enum{
   BAD_ORDER               = 3
 } t_errors;
 
-
 static void getWheels(Queue* q);
 static void getDeltaMax(Queue* q);
 static void getVectorTrsl (Queue* q);

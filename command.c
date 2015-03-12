@@ -1,7 +1,7 @@
 #include "command.h"
 
-t_robot robot;
-s_default defaults;
+static t_robot robot;
+static s_default defaults;
 
 static void packfloat(Queue* q, float f){
   f_conv conv;
@@ -35,12 +35,14 @@ static void goto_xy(Queue* in){
   float x,y;
   x = unpackfloat(in);
   y = unpackfloat(in);
+  robot_goto_xy(x,y, &robot, &defaults);
   printf ("%sgoto x: %f; y: %f\n",KNRM, x,y);
 }
 
 static void goto_theta(Queue* in){
   float theta;
   theta = unpackfloat(in);
+  robot_goto_theta(theta, &robot, &defaults);
   printf ("%sgoto theta: %f\n", KNRM, theta);
 }
 
@@ -52,6 +54,7 @@ static void execute_free(Queue* in){
 static void execute_recalage(Queue* in){
   robot.recalage = 1;
   uint8_t t1 = dequeue(in);
+  //if (t1 & 1)
 
   robot.cntl = -500;
   robot.cntr = -500;

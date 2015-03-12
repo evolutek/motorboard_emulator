@@ -45,5 +45,11 @@ typedef struct{
   float delta_rot_max;
 } s_default;
 
+extern void actualize(t_robot robot, s_default def);
+extern void robot_goto_xy(const float x, const float y,
+    t_robot *robot, s_default *def);
+extern void robot_goto_theta(const float theta,
+    t_robot *robot, s_default *def);
+extern void robot_goto_dest();
 
 #endif
