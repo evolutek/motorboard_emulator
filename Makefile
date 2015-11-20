@@ -1,25 +1,12 @@
-CC=gcc
-CFLAGS=-lutil -lpthread 
-LDFLAGS=-lutil -lpthread
-EXEC=mb_emu
-SRC= $(wildcard *.c)
-OBJ= $(SRC:.c=.o)
+SRCPATH= src/
 
-all: $(EXEC)
+all:
+	make -C $(SRCPATH)
 
-mb_emu: $(OBJ)
-	$(CC) -o $@ $^ $(LDFLAGS)
-
-main.o: command.h interface.h queue.h robot.h threads.h colored_print.h
-
-%.o: %.c
-	$(CC) -o $@ $(CFLAGS) -c $<
-
-.PHONY: clean mrpoper
+.PHONY: clean mrproper
 
 clean:
-	rm -rf *.o
+	make -C $(SRCPATH) clean
 
-mrproper: clean
-	rm -rf $(EXEC)
-
+mrproper:
+	make -C $(SRCPATH) mrproper
